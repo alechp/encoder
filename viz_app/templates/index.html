@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformer Encoder Visualizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🤖 Transformer Encoder Visualizer</h1>
+            <p class="subtitle">Real-time embedding visualization with JAX & Haiku</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar Controls -->
+            <aside class="sidebar">
+                <div class="control-panel">
+                    <h2>Controls</h2>
+
+                    <!-- Visualization Mode -->
+                    <div class="control-group">
+                        <label>Visualization Mode</label>
+                        <select id="viz-mode" class="control">
+                            <option value="2d-pca">2D PCA</option>
+                            <option value="3d-pca">3D PCA</option>
+                            <option value="2d-tsne">2D t-SNE</option>
+                            <option value="3d-tsne">3D t-SNE</option>
+                            <option value="positional">Positional Encoding</option>
+                            <option value="realtime">Real-time Stream</option>
+                        </select>
+                    </div>
+
+                    <!-- Sample Generation -->
+                    <div class="control-group">
+                        <label>Number of Samples</label>
+                        <input type="range" id="n-samples" class="control" min="10" max="200" value="60" step="10">
+                        <span id="n-samples-value">60</span>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Categories</label>
+                        <input type="range" id="n-categories" class="control" min="2" max="5" value="3" step="1">
+                        <span id="n-categories-value">3</span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="control-group">
+                        <button id="generate-btn" class="btn btn-primary">Generate Samples</button>
+                        <button id="visualize-btn" class="btn btn-secondary">Visualize</button>
+                        <button id="clear-btn" class="btn btn-danger">Clear</button>
+                    </div>
+
+                    <!-- Real-time Controls -->
+                    <div class="control-group" id="realtime-controls" style="display: none;">
+                        <h3>Real-time Stream</h3>
+                        <button id="start-stream-btn" class="btn btn-success">Start Stream</button>
+                        <button id="stop-stream-btn" class="btn btn-warning" disabled>Stop Stream</button>
+                        <div class="stream-status" id="stream-status">Ready</div>
+                    </div>
+
+                    <!-- Encoder Config -->
+                    <div class="control-group config-section">
+                        <h3>Encoder Config</h3>
+                        <div class="config-item">
+                            <span>Vocab Size:</span>
+                            <span id="config-vocab">-</span>
+                        </div>
+                        <div class="config-item">
+                            <span>Embed Dim:</span>
+                            <span id="config-embed">-</span>
+                        </div>
+                        <div class="config-item">
+                            <span>Attention Heads:</span>
+                            <span id="config-heads">-</span>
+                        </div>
+                        <div class="config-item">
+                            <span>Sequence Length:</span>
+                            <span id="config-seqlen">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="control-group stats-section">
+                        <h3>Statistics</h3>
+                        <div class="stat-item">
+                            <span>Samples:</span>
+                            <span id="stat-samples">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Dimensions:</span>
+                            <span id="stat-dims">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Variance:</span>
+                            <span id="stat-variance">-</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Visualization Area -->
+            <main class="viz-area">
+                <div id="plot-container">
+                    <div id="loading" class="loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Processing...</p>
+                    </div>
+                    <div id="plot"></div>
+                </div>
+
+                <!-- Info Panel -->
+                <div class="info-panel">
+                    <div class="info-item">
+                        <strong>Status:</strong>
+                        <span id="status-text">Ready</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Last Update:</strong>
+                        <span id="last-update">Never</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Transformer Encoder Visualizer | Built with Flask, Plotly.js, D3.js & Socket.IO</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
